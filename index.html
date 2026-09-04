@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MediLens AI - Medical Report Analyzer</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">✚</div>
+            <span>Medi<span>Lens</span> AI</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#analyzer">Analyzer</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
+
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+
+        <div class="hero-content">
+
+            <div class="badge">
+                ✨ AI-Powered Medical Report Analysis
+            </div>
+
+            <h1>
+                Understand Your
+                <span>Medical Reports</span>
+                Easily
+            </h1>
+
+            <p>
+                Upload your medical report and get a simple,
+                easy-to-understand analysis of important test values.
+            </p>
+
+            <a href="#analyzer" class="primary-btn">
+                Analyze Report →
+            </a>
+
+        </div>
+
+        <div class="hero-card">
+
+            <div class="card-header">
+                <div>
+                    <small>REPORT STATUS</small>
+                    <h3>Analysis Preview</h3>
+                </div>
+
+                <div class="status-dot"></div>
+            </div>
+
+            <div class="preview-row">
+                <span>Hemoglobin</span>
+                <strong class="normal">Normal</strong>
+            </div>
+
+            <div class="preview-row">
+                <span>Vitamin D</span>
+                <strong class="attention">Attention</strong>
+            </div>
+
+            <div class="preview-row">
+                <span>Glucose</span>
+                <strong class="normal">Normal</strong>
+            </div>
+
+            <div class="preview-row">
+                <span>Cholesterol</span>
+                <strong class="high">High</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ANALYZER -->
+    <section class="analyzer-section" id="analyzer">
+
+        <div class="section-title">
+            <span>REPORT ANALYZER</span>
+
+            <h2>Upload Your Medical Report</h2>
+
+            <p>
+                Supported format: PDF
+            </p>
+        </div>
+
+
+        <!-- UPLOAD BOX -->
+        <div class="upload-container">
+
+            <div class="upload-box" id="uploadBox">
+
+                <div class="upload-icon">
+                    📄
+                </div>
+
+                <h3>Drop your report here</h3>
+
+                <p>
+                    or click below to choose a PDF file
+                </p>
+
+                <label for="fileInput" class="upload-btn">
+                    Choose PDF
+                </label>
+
+                <input
+                    type="file"
+                    id="fileInput"
+                    accept=".pdf"
+                    hidden
+                >
+
+                <div id="fileName" class="file-name">
+                    No file selected
+                </div>
+
+            </div>
+
+
+            <button id="analyzeBtn" class="analyze-btn" disabled>
+                🔍 Analyze Report
+            </button>
+
+        </div>
+
+
+        <!-- LOADING -->
+        <div id="loading" class="loading hidden">
+
+            <div class="spinner"></div>
+
+            <h3>Analyzing your report...</h3>
+
+            <p>
+                Extracting medical information
+            </p>
+
+        </div>
+
+
+        <!-- RESULTS -->
+        <div id="results" class="results hidden">
+
+            <div class="results-header">
+
+                <div>
+                    <span class="section-label">
+                        ANALYSIS COMPLETE
+                    </span>
+
+                    <h2>Report Analysis</h2>
+                </div>
+
+                <button id="downloadBtn" class="download-btn">
+                    📥 Download Summary
+                </button>
+
+            </div>
+
+
+            <!-- STAT CARDS -->
+            <div class="stats">
+
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div>
+                        <span>Tests Found</span>
+                        <strong id="totalTests">0</strong>
+                    </div>
+                </div>
+
+                <div class="stat-card normal-card">
+                    <div class="stat-icon">🟢</div>
+                    <div>
+                        <span>Normal</span>
+                        <strong id="normalTests">0</strong>
+                    </div>
+                </div>
+
+                <div class="stat-card attention-card">
+                    <div class="stat-icon">🟡</div>
+                    <div>
+                        <span>Attention</span>
+                        <strong id="attentionTests">0</strong>
+                    </div>
+                </div>
+
+                <div class="stat-card high-card">
+                    <div class="stat-icon">🔴</div>
+                    <div>
+                        <span>Outside Range</span>
+                        <strong id="highTests">0</strong>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="report-card">
+
+                <h3>Detected Test Results</h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Test</th>
+                                <th>Result</th>
+                                <th>Reference Range</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="resultsTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- AI EXPLANATION -->
+            <div class="explanation-card">
+
+                <div class="explanation-title">
+                    <span>🧠</span>
+
+                    <div>
+                        <h3>Simple Explanation</h3>
+                        <p>Educational interpretation of detected values</p>
+                    </div>
+                </div>
+
+                <div id="explanationContent">
+                </div>
+
+            </div>
+
+
+            <!-- DISCLAIMER -->
+            <div class="disclaimer">
+
+                <strong>⚠️ Important</strong>
+
+                <p>
+                    MediLens AI provides educational information only.
+                    It does not provide a medical diagnosis or replace
+                    advice from a qualified healthcare professional.
+                    Always discuss concerning results with a doctor.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+
+        <div class="section-title">
+
+            <span>ABOUT MEDILENS</span>
+
+            <h2>Making Medical Reports Easier to Understand</h2>
+
+            <p>
+                MediLens AI is designed to convert complex medical
+                report information into simple and understandable
+                explanations.
+            </p>
+
+        </div>
+
+        <div class="features">
+
+            <div class="feature">
+                <div>📄</div>
+                <h3>PDF Analysis</h3>
+                <p>
+                    Extract information from uploaded medical reports.
+                </p>
+            </div>
+
+            <div class="feature">
+                <div>🧠</div>
+                <h3>Smart Explanation</h3>
+                <p>
+                    Understand medical terms using simple language.
+                </p>
+            </div>
+
+            <div class="feature">
+                <div>📊</div>
+                <h3>Visual Results</h3>
+                <p>
+                    Quickly identify normal and unusual values.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="logo">
+            <div class="logo-icon">✚</div>
+            MediLens AI
+        </div>
+
+        <p>
+            © 2026 MediLens AI. Educational use only.
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
